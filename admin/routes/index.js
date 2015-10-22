@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Admin = require('../controllers/admin');
 var Country = require('../controllers/country');
+var State = require('../controllers/state');
 
 
 /* GET home page. */
@@ -19,6 +20,7 @@ router.post('/get-country-detail-by-id', Admin.isLoggedIn,Country.getCountryDeta
 router.post('/update-country-details-by-id', Admin.isLoggedIn,Country.updateCountryDetailsById);
 router.post('/update-country-status-by-id', Admin.isLoggedIn,Country.updateCountryStatusById);
 router.post('/delete-country-by-id', Admin.isLoggedIn,Admin.isAdminAllowed, Country.deleteCountryById);
+router.get('/state', Admin.isLoggedIn,Admin.getUserRole, State.getStateListing);
 
 
 

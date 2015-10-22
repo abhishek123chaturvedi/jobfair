@@ -1,0 +1,143 @@
+<% include ../partials/header.html %>
+
+<div id="wrapper">
+
+    <!-- Navigation -->
+    <% include ../partials/navigation_bar.html %>
+
+    <div id="page-wrapper">
+
+        <div class="container-fluid">
+
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        State Listing <small>Statistics Overview</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li class="active">
+                            <i class="fa fa-dashboard"></i> State Listing
+                            <a class="text-right add-state" href="javascript:;">Add State</a>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <!-- /.row -->
+            <% if (state.length > 0) {%>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Name</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for (var i = 0; i< state.length ; i++) {%>
+                        <tr>
+                            <td><%=(i+1)%></td>
+                            <td><%=state[i].name%></td>
+                            <td>
+                                <a href="javascript:;" data-id = "<%=country[i]._id%>" class="edit-country">Edit</a>
+                                <% if(user_role == "admin") {%>
+                                <a href="javascript:;" data-id = "<%=country[i]._id%>" class="delete-country">Delete</a>
+                                <% } %>
+                                <% if(state[i].is_active) { %>
+                                <a href="javascript:;" data-id = "<%=country[i]._id%>" class="update-status-country">Disable</a>
+                                <%} else {%>
+                                <a href="javascript:;" data-id = "<%=country[i]._id%>" class="update-status-country">Enable</a>
+                                <% } %>
+                            </td>
+                        </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                    <!-- /. Table-->
+                </div>
+            </div>
+            <!-- /.row -->
+            <% }else { %>
+            <p>No state present</p>
+            <% } %>
+
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+</div>
+<!-- /#wrapper -->
+
+<!-- Modal for add country-->
+
+<div class="modal fade" id="addStateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add State</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form id="addState">
+                            <div class="form-group row">
+                                <label class="col-md-3">Name *</label>
+                                <div class="col-md-9 ">
+                                    <input type="text" class="form-control state_name" autofocus name="name" id="name">
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-9 col-md  col-md-offset-3">
+                                    <button class="btn btn-primary save-country" type="submit"><i class="fa"></i>Save</button>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--./ add country modal-->
+
+<!--edit country modal-->
+
+<div class="modal fade" id="editStateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Edit State</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form id="editCountry">
+                            <input type="hidden" class="form-control edit_state_id" autofocus name="state_id" id="country_id">
+                            <div class="form-group row">
+                                <label class="col-md-3">Name *</label>
+                                <div class="col-md-9 ">
+                                    <input type="text" class="form-control edit_state_name" autofocus name="name" id="name">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-9 col-md  col-md-offset-3">
+                                    <button class="btn btn-primary" type="submit"><i class="fa"></i>Save</button>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--./ edit country modal-->
+
+<% include ../partials/footer.html %>
