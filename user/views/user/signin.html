@@ -25,15 +25,16 @@
 							<h3 class="thin text-center">Sign in to your account</h3>
 							<p class="text-center text-muted">Lorem ipsum dolor sit amet, <a href="/sign-up">Register</a> adipisicing elit. Quo nulla quibusdam cum doloremque incidunt nemo sunt a tenetur omnis odio. </p>
 							<hr>
-							
-							<form>
+
+                            <% include ../partials/flash.html %>
+                            <form method="post" action="/login">
 								<div class="top-margin">
 									<label>Username/Email <span class="text-danger">*</span></label>
-									<input type="text" class="form-control">
+									<input type="text" class="form-control" name="username">
 								</div>
 								<div class="top-margin">
 									<label>Password <span class="text-danger">*</span></label>
-									<input type="password" class="form-control">
+									<input type="password" class="form-control" name="password">
 								</div>
 
 								<hr>

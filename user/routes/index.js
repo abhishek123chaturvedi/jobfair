@@ -3,28 +3,20 @@ var router = express.Router();
 var User = require('../controllers/user');
 
 /* GET home page. */
-router.get('/', function(req, res) {
-  res.render('index.html');
-});
+router.get('/', User.getIndexPageTemplate);
 
-router.get('/about', function(req, res) {
-  res.render('user/about.html');
-});
+router.get('/about', User.getAboutPageTemplate);
 
-router.get('/contact', function(req, res) {
-  res.render('user/contact.html');
-});
+router.get('/contact', User.getContactPageTemplate);
 
-router.get('/sign-in', function(req, res) {
-  res.render('user/signin.html');
-});
+router.get('/sign-in', User.getLoginPageTemplate);
 
-router.get('/sign-up', function(req, res) {
-  res.render('user/signup.html');
-});
+router.get('/sign-up', User.getRegisterPageTemplate);
 
 // POST
 router.post('/register', User.registerUser);
+router.post('/login', User.login);
+router.get('/logout', User.logout);
 
 
 module.exports = router;

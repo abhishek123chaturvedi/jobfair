@@ -29,9 +29,6 @@ var UserSchema = new Schema({
         type: String,
         trim: true
     },
-    password :{
-        type: String
-    },
     address :  {
         type: String
     },
@@ -47,9 +44,16 @@ var UserSchema = new Schema({
     user_role: {
         type: String,
         required: true,
-        default : 'employee', //eg:- admin/employee/employer
+        default : 'user', //eg:- admin/employee/employer
         trim: true
     },
+    device_info : [
+        {
+            type : { type: String, trim: true}, // eg. ios/android
+            id : { type: String, trim: true},
+            created_at: {  type: Date, default : Date.now}
+        }
+    ],
     verification_code : {
         type : Number,
         default : 0

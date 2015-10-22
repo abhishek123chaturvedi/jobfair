@@ -104,9 +104,6 @@ var AdminController = {
         });
 	},
 
-    /*
-     * POST register user.
-     */
 
     registerUser : function(req, res, next) {
         var info = {},

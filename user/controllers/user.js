@@ -1,6 +1,4 @@
 var User = require('../models/user'),
-    env = process.env.NODE_ENV || 'local',
-    bcrypt = require('bcryptjs'),
     config = require('../config/config'),
     request = require('request'),
     async = require('async'),
@@ -124,13 +122,45 @@ passport.deserializeUser(User.deserializeUser());
 
 var UserController = {
 
-	login : function(req, res) {
-	  	res.send('Hi, This is user');
+    getIndexPageTemplate : function(req,res,next) {
+        res.render('index.html');
+    },
+
+    getAboutPageTemplate : function(req,res,next) {
+        res.render('user/about.html');
+    },
+
+    getContactPageTemplate : function(req,res,next) {
+        res.render('user/contact.html');
+    },
+
+    getLoginPageTemplate : function(req,res,next) {
+        if(typeof req.session.userData !== 'undefined'
+            && req.session.userData !==  null) {
+            res.redirect('/');
+        } else {
+            res.render('user/signin.html');
+        }
+    },
+
+    getRegisterPageTemplate : function(req, res,next) {
+        if(typeof req.session.userData !== 'undefined'
+            && req.session.userData !==  null) {
+            res.redirect('/');
+        } else {
+            res.render('user/signup.html');
+        }
 	},
 
-    /*
-     * POST register user.
-     */
+    isLoggedIn : function(req,res,next) {
+        if(typeof req.session.userData !== 'undefined'
+            && req.session.userData !==  null) {
+            next();
+        } else {
+            req.flash('danger', "User not logged in");
+            res.redirect('/sign-in');
+        }
+    },
 
     registerUser : function(req, res, next) {
         var info = {},
@@ -144,7 +174,7 @@ var UserController = {
 
             if(req.body.password == req.body.confirm_password) {
                 var emailRegex = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i),
-                    mobRegex = new RegExp(/^[1-9]{9}$/);
+                    mobRegex = new RegExp(/^[0-9]{10}$/);
 
                 if(emailRegex.test(req.body.email) && mobRegex.test(req.body.mobile)){
                     query = {username : req.body.username};
@@ -156,6 +186,7 @@ var UserController = {
                         is_sms_alert : req.body.is_sms_alert,
                         is_mail_alert : req.body.is_mail_alert,
                         email : req.body.email,
+                        user_role : 'user',
                         authType : 'local'
                     };
                     UserController.findAndCreateUser(query, data, res, req, next);
@@ -173,6 +204,7 @@ var UserController = {
             res.redirect('/sign-up');
         }
     },
+
     findAndCreateUser : function(query, data, res, req, next) {
         var info = {};
         User.findOne(query,(function(err, user){
@@ -197,19 +229,19 @@ var UserController = {
                     User.register(new User(data), req.body.password, function(err, user) {
                         if (err) {
                             req.flash('danger', "Something went wrong!!");
-                            res.redirect('/signup');
+                            res.redirect('/sign-up');
                         } else {
                             passport.authenticate('local', function(err, user, info) {
                                 if (err || !user) {
                                     req.flash('danger', info['message']);
-                                    res.redirect('/signup');
+                                    res.redirect('/sign-up');
                                 } else {
                                     req.logIn(user, function(err) {
                                         if (err) {
                                             req.flash('danger', info['message']);
-                                            res.redirect('/signup');
+                                            res.redirect('/sign-up');
                                         } else {
-                                            next();
+                                            res.redirect('/sign-in');
                                         }
                                     });
                                 }
@@ -220,6 +252,34 @@ var UserController = {
             })
         );
     },
+
+    login : function(req, res, next){
+        req.body.username = req.body.username.toLowerCase();
+        passport.authenticate('local', function(err, user, info) {
+            console.log(err, user, info)
+            if (err || !user) {
+                req.flash('danger', info['message']);
+                res.redirect('/sign-in')
+            } else {
+                req.logIn(user, function(err) {
+                    if (err) {
+                        req.flash('danger', info['message']);
+                        res.redirect('/sign-in')
+                    } else {
+                        req.session.userData = {
+                            user_id : user.id,
+                            username : user.username,
+                            first_name : user.first_name,
+                            user_role : user.user_role
+                        };
+                        console.log(req.session.userData)
+                        res.redirect('/');
+                    }
+                });
+            }
+        })(req, res, next);
+    },
+
     logout :  function(req, res){
 
         req.session.destroy();

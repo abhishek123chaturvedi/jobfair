@@ -6,12 +6,14 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
+var flash = require('express-flash');
 var passport = require('passport');
 var config = require('./config/config');
 var db = require('./config/db');
 
 var routes = require('./routes/index');
 var admin = require('./routes/admin');
+
 
 var app = express();
 
@@ -38,9 +40,22 @@ app.use(session({
     store: new MongoStore({url: config['dbUrl']})
 }));
 
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+    next();
+});
+
+app.use(function(req,res,next){
+    res.locals.session = req.session;
+    next();
+});
 app.use('/', routes);
 app.use('/admin', admin);
 
