@@ -41,14 +41,14 @@
                             <td><%=(i+1)%></td>
                             <td><%=state[i].name%></td>
                             <td>
-                                <a href="javascript:;" data-id = "<%=country[i]._id%>" class="edit-country">Edit</a>
+                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="edit-country">Edit</a>
                                 <% if(user_role == "admin") {%>
-                                <a href="javascript:;" data-id = "<%=country[i]._id%>" class="delete-country">Delete</a>
+                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="delete-country">Delete</a>
                                 <% } %>
                                 <% if(state[i].is_active) { %>
-                                <a href="javascript:;" data-id = "<%=country[i]._id%>" class="update-status-country">Disable</a>
+                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="update-status-country">Disable</a>
                                 <%} else {%>
-                                <a href="javascript:;" data-id = "<%=country[i]._id%>" class="update-status-country">Enable</a>
+                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="update-status-country">Enable</a>
                                 <% } %>
                             </td>
                         </tr>
@@ -88,8 +88,16 @@
                                 <div class="col-md-9 ">
                                     <input type="text" class="form-control state_name" autofocus name="name" id="name">
                                 </div>
-
                             </div>
+                            <div class="form-group row">
+                                <label class="col-md-3">Country *</label>
+                                <div class="col-md-9 ">
+                                    <select name = "countryDropdown" class="country-dropdown-for-state form-control">
+
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-sm-9 col-md  col-md-offset-3">
                                     <button class="btn btn-primary save-country" type="submit"><i class="fa"></i>Save</button>

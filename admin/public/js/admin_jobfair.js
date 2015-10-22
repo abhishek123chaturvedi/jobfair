@@ -33,7 +33,7 @@ adminJobfair.prototype = {
                 type: 'post',
                 success: function (res) {
                     if(typeof res.status !== "undefined" && res.status == true) {
-                        $('#addVendor').modal('hide');
+                        $('#addCountryModal').modal('hide');
                         location.reload();
                     } else {
                         alert(res.msg)
@@ -122,6 +122,50 @@ adminJobfair.prototype = {
             });
         });
 
+        /* state jquery*/
 
+        $('.add-state').click(function(e){
+            e.preventDefault();
+            $("#addStateModal").modal({
+                show: true
+            });
+            $.ajax({
+                url: '/get-country-listing-for-state',
+                type: 'get',
+                success: function (res) {
+                    if(typeof res.status !== "undefined" && res.status == true) {
+                        var html = '';
+                        for(var i = 0; i<res.data.length; i++) {
+                            html  += '<option value="'+res.data[i]._id+'">'+res.data[i].name+'</option>';
+                        }
+                        $(".country-dropdown-for-state").append(html);
+                    } else {
+                        alert(res.msg)
+                    }
+                }
+            });
+        });
+
+        $('#addState').submit(function(e){
+            e.preventDefault();
+            var data = {
+                name : $(".state_name").val(),
+                country_id : $('.country-dropdown-for-state').find("option:selected").val()
+            };
+
+            $.ajax({
+                url: '/add-state-details',
+                data : data,
+                type: 'post',
+                success: function (res) {
+                    if(typeof res.status !== "undefined" && res.status == true) {
+                        $('#addStateodal').modal('hide');
+                        location.reload();
+                    } else {
+                        alert(res.msg)
+                    }
+                }
+            });
+        });
     }
 };

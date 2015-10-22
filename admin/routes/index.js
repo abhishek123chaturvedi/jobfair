@@ -20,7 +20,9 @@ router.post('/get-country-detail-by-id', Admin.isLoggedIn,Country.getCountryDeta
 router.post('/update-country-details-by-id', Admin.isLoggedIn,Country.updateCountryDetailsById);
 router.post('/update-country-status-by-id', Admin.isLoggedIn,Country.updateCountryStatusById);
 router.post('/delete-country-by-id', Admin.isLoggedIn,Admin.isAdminAllowed, Country.deleteCountryById);
-router.get('/state', Admin.isLoggedIn,Admin.getUserRole, State.getStateListing);
+router.get('/state', Admin.isLoggedIn, Admin.getUserRole, State.getStateListing);
+router.get('/get-country-listing-for-state', Admin.isLoggedIn, State.getCountryListing);
+router.post('/add-state-details', Admin.isLoggedIn, State.addStateDetails);
 
 
 
