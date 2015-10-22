@@ -1,0 +1,9 @@
+<div class="flash-message">
+    <% if(typeof locals.messages !== "undefined" && Object.keys(locals.messages).length > 0) { %>
+        <% for (var type in locals.messages) { %>
+            <% if (locals.messages.hasOwnProperty(type)) { %>
+                <p class="<%= 'bg-'+type %>"><%= locals.messages[type] %></p>
+            <% } %>
+        <% } %>
+    <% } %>
+</div>
