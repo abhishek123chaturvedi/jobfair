@@ -114,6 +114,28 @@ var CountryController = {
             return;
         }
 
+    },
+
+    updateCountryStatusById : function(req, res, next) {
+        Country.findOne({_id : req.body.id},function(err,response) {
+            if(err|| !response) {
+                res.send({status : false, msg : "Invalid country"});
+                res.end();
+            } else {
+                response.is_active = !response.is_active;
+                response.updated_at = Date.now();
+                response.updated_by = req.session.userData.user_id;
+                response.save(function(err,data){
+                    if(err || !data) {
+                        res.send({status : false, msg: "Cannot update status . Please try again later" });
+                        return;
+                    } else {
+                        res.send({status : true, msg: "status updated successfully"});
+                        return;
+                    }
+                });
+            }
+        });
     }
 };
 module.exports = CountryController;

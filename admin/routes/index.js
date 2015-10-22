@@ -17,6 +17,7 @@ router.get('/country', Admin.isLoggedIn,Country.getCountryListing);
 router.post('/add-country-details', Admin.isLoggedIn,Country.addCountryDetails);
 router.post('/get-country-detail-by-id', Admin.isLoggedIn,Country.getCountryDetailsById);
 router.post('/update-country-details-by-id', Admin.isLoggedIn,Country.updateCountryDetailsById);
+router.post('/update-country-status-by-id', Admin.isLoggedIn,Country.updateCountryStatusById);
 
 
 

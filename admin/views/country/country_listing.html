@@ -40,7 +40,14 @@
                                     <tr>
                                         <td><%=(i+1)%></td>
                                         <td><%=country[i].name%></td>
-                                        <td><a href="javascript:;" data-id = "<%=country[i]._id%>" class="edit-country">Edit</a></td>
+                                        <td>
+                                            <a href="javascript:;" data-id = "<%=country[i]._id%>" class="edit-country">Edit</a>
+                                            <% if(country[i].is_active) { %>
+                                                <a href="javascript:;" data-id = "<%=country[i]._id%>" class="update-status-country">Disable</a>
+                                            <%} else {%>
+                                                <a href="javascript:;" data-id = "<%=country[i]._id%>" class="update-status-country">Enable</a>
+                                            <% } %>
+                                        </td>
                                     </tr>
                                 <% } %>
                                 </tbody>
