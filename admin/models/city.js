@@ -1,19 +1,20 @@
 /**
  * Created by Abhishek on 22/10/15.
  */
+
 var mongoose = require('mongoose'),
     async = require("async"),
     Schema = mongoose.Schema;
 
-var StateSchema = new Schema({
+var CitySchema = new Schema({
     name: {
         type: String,
         required : true,
         trim : true
     },
-    country_id : {
+    state_id : {
         type : Schema.ObjectId,
-        ref : 'Country'
+        ref : 'State'
     },
     is_active : {
         type : Boolean,
@@ -31,9 +32,9 @@ var StateSchema = new Schema({
     }
 });
 
-StateSchema.pre('save', function(next, done) {
+CitySchema.pre('save', function(next, done) {
 
-    var state = this;
+    var city = this;
     //Validation Functions to check user details.
     async.series([
         function(callback) {
@@ -41,11 +42,11 @@ StateSchema.pre('save', function(next, done) {
             var currentDate = new Date();
 
             // change the updated_at field to current date
-            state.updated_at = currentDate;
+            city.updated_at = currentDate;
 
             // if created_at doesn't exist, add to that field
-            if (!state.created_at)
-                state.created_at = currentDate;
+            if (!city.created_at)
+                city.created_at = currentDate;
 
             callback();
 
@@ -57,4 +58,4 @@ StateSchema.pre('save', function(next, done) {
 });
 
 
-module.exports = mongoose.model('State', StateSchema);
+module.exports = mongoose.model('City', CitySchema);

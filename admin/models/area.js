@@ -5,15 +5,15 @@ var mongoose = require('mongoose'),
     async = require("async"),
     Schema = mongoose.Schema;
 
-var StateSchema = new Schema({
+var AreaSchema = new Schema({
     name: {
         type: String,
         required : true,
         trim : true
     },
-    country_id : {
+    city_id : {
         type : Schema.ObjectId,
-        ref : 'Country'
+        ref : 'City'
     },
     is_active : {
         type : Boolean,
@@ -31,9 +31,9 @@ var StateSchema = new Schema({
     }
 });
 
-StateSchema.pre('save', function(next, done) {
+AreaSchema.pre('save', function(next, done) {
 
-    var state = this;
+    var area = this;
     //Validation Functions to check user details.
     async.series([
         function(callback) {
@@ -41,11 +41,11 @@ StateSchema.pre('save', function(next, done) {
             var currentDate = new Date();
 
             // change the updated_at field to current date
-            state.updated_at = currentDate;
+            area.updated_at = currentDate;
 
             // if created_at doesn't exist, add to that field
-            if (!state.created_at)
-                state.created_at = currentDate;
+            if (!area.created_at)
+                area.created_at = currentDate;
 
             callback();
 
@@ -57,4 +57,4 @@ StateSchema.pre('save', function(next, done) {
 });
 
 
-module.exports = mongoose.model('State', StateSchema);
+module.exports = mongoose.model('Area', AreaSchema);
