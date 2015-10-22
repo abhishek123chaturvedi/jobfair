@@ -41,7 +41,7 @@ var CountryController = {
     },
 
     addCountryDetails : function(req, res, next) {
-        var nameRegex = new RegExp(/^[a-zA-Z]*$/);
+        var nameRegex = new RegExp(/^[a-zA-Z ]*$/);
         if(nameRegex.test(req.body.name)){
             var country_name = (req.body.name).toLowerCase();
             Country.findOne({name : country_name},function(err,country) {
@@ -78,7 +78,7 @@ var CountryController = {
     },
 
     updateCountryDetailsById : function(req, res, next) {
-        var nameRegex = new RegExp(/^[a-zA-Z]*$/);
+        var nameRegex = new RegExp(/^[a-zA-Z ]*$/);
         if(nameRegex.test(req.body.name)){
             var country_name = (req.body.name).toLowerCase();
             Country.findOne({ _id : req.body.id}, function(error, country) {
