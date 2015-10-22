@@ -24,29 +24,34 @@
                     </div>
                 </div>
                 <!-- /.row -->
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>S.No</th>
-                                <th>Name</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>3</td>
-                                <td>John</td>
-                                <td>Rambo</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <!-- /. Table-->
+                <% if (country.length > 0) {%>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Name</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <% for (var i = 0; i< country.length ; i++) {%>
+                                    <tr>
+                                        <td><%=(i+1)%></td>
+                                        <td><%=country[i].name%></td>
+                                        <td><a href="javascript:;" data-id = "<%=country[i]._id%>" class="edit-country">Edit</a></td>
+                                    </tr>
+                                <% } %>
+                                </tbody>
+                            </table>
+                            <!-- /. Table-->
+                        </div>
                     </div>
-                </div>
-                <!-- /.row -->
+                    <!-- /.row -->
+                <% }else { %>
+                    <p>No country present</p>
+                <% } %>
 
             </div>
             <!-- /.container-fluid -->
@@ -54,5 +59,75 @@
          <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
+
+    <!-- Modal for add country-->
+
+    <div class="modal fade" id="addCountryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add Country</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form id="addCountry">
+                                <div class="form-group row">
+                                    <label class="col-md-3">Name *</label>
+                                    <div class="col-md-9 ">
+                                        <input type="text" class="form-control country_name" autofocus name="name" id="name">
+                                    </div>
+
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-9 col-md  col-md-offset-3">
+                                        <button class="btn btn-primary save-country" type="submit"><i class="fa"></i>Save</button>
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--./ add country modal-->
+
+    <!--edit country modal-->
+
+    <div class="modal fade" id="editCountryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Edit Country</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form id="editCountry">
+                                <input type="hidden" class="form-control edit_country_id" autofocus name="country_id" id="country_id">
+                                <div class="form-group row">
+                                    <label class="col-md-3">Name *</label>
+                                    <div class="col-md-9 ">
+                                        <input type="text" class="form-control edit_country_name" autofocus name="name" id="name">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-9 col-md  col-md-offset-3">
+                                        <button class="btn btn-primary" type="submit"><i class="fa"></i>Save</button>
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--./ edit country modal-->
 
 <% include ../partials/footer.html %>
