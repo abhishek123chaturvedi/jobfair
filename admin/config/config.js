@@ -14,15 +14,6 @@ var configVars = {
             returnURL: 'http://localhost:8080/auth/google/callback',
             realm: 'http://localhost:8080/'
         },
-        smtpSetting : {
-            host: 'smtp.gmail.com',
-            port: 587,
-            requiresAuth: true,
-            auth: {
-                user: 'jain.robin76@gmail.com',
-                pass: 'mathematics15'
-            }
-        },
         imageDim : {
             thumb : {
                 width : 256,
