@@ -104,6 +104,24 @@ adminJobfair.prototype = {
             });
         });
 
+        $('.delete-country').click(function(e){
+            var data = {
+                id : $(this).attr('data-id')
+            };
+            $.ajax({
+                url: '/delete-country-by-id',
+                data : data,
+                type: 'post',
+                success: function (res) {
+                    if(typeof res.status !== "undefined" && res.status == true) {
+                        location.reload();
+                    } else {
+                        alert(res.msg);
+                    }
+                }
+            });
+        });
+
 
     }
 };

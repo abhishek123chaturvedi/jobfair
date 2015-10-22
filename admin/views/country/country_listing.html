@@ -42,6 +42,9 @@
                                         <td><%=country[i].name%></td>
                                         <td>
                                             <a href="javascript:;" data-id = "<%=country[i]._id%>" class="edit-country">Edit</a>
+                                            <% if(user_role == "admin") {%>
+                                                <a href="javascript:;" data-id = "<%=country[i]._id%>" class="delete-country">Delete</a>
+                                            <% } %>
                                             <% if(country[i].is_active) { %>
                                                 <a href="javascript:;" data-id = "<%=country[i]._id%>" class="update-status-country">Disable</a>
                                             <%} else {%>

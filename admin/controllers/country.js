@@ -19,9 +19,9 @@ var CountryController = {
                 res.render('country/country_listing.html',{country : []});
                 console.log('error',err);
             } else if( !countryNames) {
-                res.render('country/country_listing.html',{country : []});
+                res.render('country/country_listing.html',{country : [],user_role: req.userRole});
             } else {
-                res.render('country/country_listing.html',{country : countryNames})
+                res.render('country/country_listing.html',{country : countryNames, user_role: req.userRole})
             }
         });
 
@@ -134,6 +134,18 @@ var CountryController = {
                         return;
                     }
                 });
+            }
+        });
+    },
+
+    deleteCountryById : function(req, res, next) {
+        Country.remove({_id : req.body.id},function(err,response) {
+            if(err || !response) {
+                res.send({status : false, msg : "Invalid country"});
+                res.end();
+            } else {
+                res.send({status : true, msg: "Country deleted successfully"});
+                return;
             }
         });
     }

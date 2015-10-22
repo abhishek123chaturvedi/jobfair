@@ -52,6 +52,29 @@ var AdminController = {
         res.render('user_profile.html');
     },
 
+    getUserRole : function( req, res, next) {
+        Admin.findOne({_id : req.session.userData.user_id}, function(err, user) {
+            if(!err) {
+                req.userRole = user.user_role;
+                next();
+            } else {
+                res.redirect('/logout');
+            }
+
+        });
+    },
+
+    isAdminAllowed : function(req, res, next) {
+        Admin.findOne({_id : req.session.userData.user_id, user_role : "admin"}, function(err, user) {
+            if(err || !user) {
+                res.redirect('/logout');
+            } else {
+                next();
+            }
+
+        });
+    },
+
 	login : function(req, res) {
         Admin.findOne({$or: [{username : req.body.username}, {email : req.body.username}, {mobile : req.body.username}]}).exec(function(err,user) {
             if(err || ! user) {
