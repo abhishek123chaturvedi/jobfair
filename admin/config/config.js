@@ -4,7 +4,7 @@
 var env = process.env.NODE_ENV || 'local';
 var configVars = {
     local : {
-        dbUrl : "mongodb://localhost:27017/jobfair",
+        dbUrl : "mongodb://172.16.1.183:27017/jobfair",
         facebook: {
             clientID: '921756577886381',
             clientSecret: 'e9472896d97d9ab3046050d8d5700970',
