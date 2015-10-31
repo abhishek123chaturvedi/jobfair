@@ -3,9 +3,10 @@
  */
 
 
+
 var adminJobfair = function() {
 
-    //adminPrinta class
+    //adminJobfair class
 
     this.bindEvents();
 };
@@ -16,6 +17,7 @@ adminJobfair.prototype = {
     bindEvents: function() {
 
         $('.add-country').click(function(e){
+            alert("hifi")
             $("#addCountryModal").modal({
                 show: true
             });
