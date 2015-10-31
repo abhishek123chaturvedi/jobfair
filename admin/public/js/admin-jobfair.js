@@ -3,21 +3,19 @@
  */
 
 
-
-var adminJobfair = function() {
+var AdminJobfair = function() {
 
     //adminJobfair class
 
     this.bindEvents();
 };
 
-adminJobfair.prototype = {
+AdminJobfair.prototype = {
 
 
     bindEvents: function() {
 
         $('.add-country').click(function(e){
-            alert("hifi")
             $("#addCountryModal").modal({
                 show: true
             });
@@ -167,6 +165,28 @@ adminJobfair.prototype = {
                         alert(res.msg)
                     }
                 }
+            });
+        });
+
+        $('.edit-state').click(function(e){
+            e.preventDefault();
+            var data = {
+                state_id : $(this).attr('data-id')
+            };
+            $.ajax({
+                url: '/get-state-details',
+                data : data,
+                type: 'post',
+                success: function (res) {
+                    if(typeof res.status !== "undefined" && res.status == true) {
+
+                    } else {
+                        alert(res.msg)
+                    }
+                }
+            });
+            $("#editStateModal").modal({
+                show: true
             });
         });
     }
