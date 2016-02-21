@@ -4,7 +4,7 @@
 var env = process.env.NODE_ENV || 'local';
 var configVars = {
     local : {
-        dbUrl : "mongodb://172.16.1.183:27017/jobfair",
+        dbUrl : "mongodb://172.16.1.182:27017/jobfair",
         facebook: {
             clientID: '921756577886381',
             clientSecret: 'e9472896d97d9ab3046050d8d5700970',
@@ -13,12 +13,6 @@ var configVars = {
         google: {
             returnURL: 'http://localhost:8080/auth/google/callback',
             realm: 'http://localhost:8080/'
-        },
-        imageDim : {
-            thumb : {
-                width : 256,
-                height : 222
-            }
         },
         verification_message: "Thank you for the registration with Jobfair. Your verification code is ",
         successful_signup_message :"Thank you for the registration with My Jobfair you can access our services now.",

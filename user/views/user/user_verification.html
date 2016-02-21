@@ -1,0 +1,42 @@
+<% include ../partials/header.html %>
+
+<header id="head" class="secondary"></header>
+
+<!-- container -->
+<div class="container">
+
+    <ol class="breadcrumb">
+        <li><a href="index.html">Home</a></li>
+        <li class="active">Verification</li>
+    </ol>
+
+    <div class="row">
+        <!-- Article main content -->
+        <article class="col-xs-12 maincontent">
+            <header class="page-header">
+                <h1 class="page-title">Verification</h1>
+            </header>
+
+            <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3 class="thin text-center">Verify your account</h3>
+                        <p class="text-center text-muted">We have send a verification mail to your email. Please enter verification code to activate your account</p>
+                        <hr>
+                        <% include ../partials/flash.html %>
+                        <form method="post" action="/account-verification">
+                            <div class="row top-margin">
+                                <div class="col-sm-6">
+                                    <label>verification Code <span class="text-danger">*</span</label>
+                                    <input type="text" class="form-control" name="verification_code" required>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </article>
+    </div>
+</div>
+<% include ../partials/footer.html %>

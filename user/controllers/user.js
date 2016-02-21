@@ -1,6 +1,8 @@
 var User = require('../models/user'),
     config = require('../config/config'),
     request = require('request'),
+    email = require('../util/email'),
+    util = require('../util/index'),
     async = require('async'),
     passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
@@ -126,6 +128,15 @@ var UserController = {
         res.render('index.html');
     },
 
+    getUserVerification : function(req,res,next) {
+        if(typeof req.user !== "undefined" && !req.user.is_verified) {
+            res.render("user/user_verification.html");
+        } else {
+            res.redirect("/");
+        }
+
+    },
+
     getAboutPageTemplate : function(req,res,next) {
         res.render('user/about.html');
     },
@@ -174,7 +185,8 @@ var UserController = {
 
             if(req.body.password == req.body.confirm_password) {
                 var emailRegex = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i),
-                    mobRegex = new RegExp(/^[0-9]{10}$/);
+                    mobRegex = new RegExp(/^[0-9]{10}$/),
+                    verification_code = Math.floor(Math.random() * 90000) + 10000;
 
                 if(emailRegex.test(req.body.email) && mobRegex.test(req.body.mobile)){
                     query = {username : req.body.username};
@@ -187,7 +199,8 @@ var UserController = {
                         is_mail_alert : req.body.is_mail_alert,
                         email : req.body.email,
                         user_role : 'user',
-                        authType : 'local'
+                        authType : 'local',
+                        verification_code : verification_code
                     };
                     UserController.findAndCreateUser(query, data, res, req, next);
 
@@ -238,10 +251,24 @@ var UserController = {
                                 } else {
                                     req.logIn(user, function(err) {
                                         if (err) {
-                                            req.flash('danger', info['message']);
+                                            //req.flash('danger', info['message']);
                                             res.redirect('/sign-up');
                                         } else {
-                                            res.redirect('/sign-in');
+                                            var templateName = "verification_mail_template",
+                                            subject = "Registration | Jobfair",
+                                            emailTo =  [ { email: data.email, type: 'to' } ];
+                                            var message = {
+                                                subject: subject,
+                                                to: emailTo,
+                                                global_merge_vars: [
+                                                    { name: 'verification_code', content: data.verification_code },
+                                                    { name: 'name', content: data.first_name }
+                                                ]
+                                            };
+                                            email.send(templateName, message, function(result){
+
+                                            });
+                                            next();
                                         }
                                     });
                                 }
@@ -251,6 +278,14 @@ var UserController = {
                 }
             })
         );
+    },
+
+    loginRedirect : function(req, res, next) {
+        if(typeof req.user !== "undefined" && req.user.is_verified) {
+            res.redirect('/');
+        } else {
+            res.redirect('/verification');
+        }
     },
 
     login : function(req, res, next){
@@ -272,7 +307,6 @@ var UserController = {
                             first_name : user.first_name,
                             user_role : user.user_role
                         };
-                        console.log(req.session.userData)
                         res.redirect('/');
                     }
                 });
@@ -281,7 +315,6 @@ var UserController = {
     },
 
     logout :  function(req, res){
-
         req.session.destroy();
         req.logout();
         res.redirect('/');

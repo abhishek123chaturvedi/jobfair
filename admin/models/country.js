@@ -8,7 +8,14 @@ var mongoose = require('mongoose'),
 
 var CountrySchema = new Schema({
     name: {
-        type: String
+        type: String,
+        required : true,
+        trim : true
+    },
+    slug: {
+        type: String,
+        required : true,
+        trim : true
     },
     is_active : {
         type : Boolean,

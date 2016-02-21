@@ -11,6 +11,11 @@ var AreaSchema = new Schema({
         required : true,
         trim : true
     },
+    slug: {
+        type: String,
+        required : true,
+        trim : true
+    },
     city_id : {
         type : Schema.ObjectId,
         ref : 'City'
