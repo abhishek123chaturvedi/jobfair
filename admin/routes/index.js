@@ -9,7 +9,7 @@ var City = require('../controllers/city');
 /* GET home page. */
 router.get(['/','/sign-in'], Admin.signIn);
 
-router.get('/sign-up', Admin.signUp);
+//router.get('/sign-up', Admin.signUp);
 
 router.get('/dashboard', Admin.isLoggedIn,Admin.dashboard);
 router.get('/profile', Admin.isLoggedIn,Admin.getUserDetails);
@@ -24,6 +24,10 @@ router.post('/delete-country-by-id', Admin.isLoggedIn,Admin.isAdminAllowed, Coun
 router.get('/state', Admin.isLoggedIn, Admin.getUserRole, State.getStateListing);
 router.get('/get-country-listing-for-state', Admin.isLoggedIn, State.getCountryListing);
 router.post('/add-state-details', Admin.isLoggedIn, State.addStateDetails);
+router.post('/get-state-details-by-id', Admin.isLoggedIn,State.getStateDetailsById);
+router.post('/update-state-details-by-id', Admin.isLoggedIn,State.updateStateDetailsById);
+router.post('/update-state-status-by-id', Admin.isLoggedIn,State.updateStateStatusById);
+router.post('/delete-state-by-id', Admin.isLoggedIn,Admin.isAdminAllowed, State.deleteStateById);
 
 router.get('/city', Admin.isLoggedIn,Admin.getUserRole, City.getCityListing);
 router.get('/get-state-listing-by-country-id', Admin.isLoggedIn, City.getStateListing);

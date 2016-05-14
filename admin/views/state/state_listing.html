@@ -30,7 +30,8 @@
                         <thead>
                         <tr>
                             <th>S.No</th>
-                            <th>Name</th>
+                            <th>State Name</th>
+                            <th>Country Name</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -39,15 +40,16 @@
                         <tr>
                             <td><%=(i+1)%></td>
                             <td><%=state[i].name%></td>
+                            <td><%=state[i].country_id.name%></td>
                             <td>
                                 <a href="javascript:;" class="edit-state" data-id = "<%=state[i]._id%>" class="edit-country">Edit</a>
                                 <% if(user_role == "admin") {%>
-                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="delete-country">Delete</a>
+                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="delete-state">Delete</a>
                                 <% } %>
                                 <% if(state[i].is_active) { %>
-                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="update-status-country">Disable</a>
+                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="update-status-state">Disable</a>
                                 <%} else {%>
-                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="update-status-country">Enable</a>
+                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="update-status-state">Enable</a>
                                 <% } %>
                             </td>
                         </tr>
@@ -124,8 +126,8 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <form id="editCountry">
-                            <input type="hidden" class="form-control edit_state_id" autofocus name="state_id" id="country_id">
+                        <form id="editState">
+                            <input type="hidden" class="form-control edit_state_id" autofocus name="state_id" id="state_id">
                             <div class="form-group row">
                                 <label class="col-md-3">Name *</label>
                                 <div class="col-md-9 ">

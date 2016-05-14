@@ -11,6 +11,11 @@ var StateSchema = new Schema({
         required : true,
         trim : true
     },
+    slug: {
+        type: String,
+        required : true,
+        trim : true
+    },
     country_id : {
         type : Schema.ObjectId,
         ref : 'Country'

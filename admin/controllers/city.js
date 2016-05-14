@@ -95,6 +95,7 @@ var CityController = {
                             },0);
                         } else {
                             res.send({status : false, msg: "Invali data." });
+                            res.end();
                             return;
                         }
                     } else {
@@ -107,7 +108,7 @@ var CityController = {
                 return;
             }
         } else {
-            res.send({status : false, msg: "Invalid data." });
+            res.send({status : false, msg: "Invalid data."});
             return;
         }
 
