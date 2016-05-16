@@ -21,6 +21,10 @@ var CitySchema = new Schema({
         type : Schema.ObjectId,
         ref : 'State'
     },
+    country_id : {
+        type : Schema.ObjectId,
+        ref : 'Country'
+    },
     is_active : {
         type : Boolean,
         default : true

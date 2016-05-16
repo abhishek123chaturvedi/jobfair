@@ -73,30 +73,37 @@ var StateController = {
                         res.send({status : false, msg: "Something went wrong." });
                         return;
                     } else if(!state) {
-                        var slug = Util.setSlug(req.body.name);
-                        if(typeof slug != 'undefined' && slug !== null && slug !== "") {
-                            Util.checkSlugExistence(State, slug, '', 'state', function(slug) {
-                                var state = new State({
-                                    name : req.body.name,
-                                    slug : slug,
-                                    country_id : req.body.country_id,
-                                    created_by : req.session.userData.user_id,
-                                    updated_by : req.session.userData.user_id
-                                });
-                                state.save(function(err,response){
-                                    if(err || !response) {
-                                        res.send({status : false, msg: "Cannot save your details . Please try again later" });
-                                        return;
-                                    } else {
-                                        res.send({status : true, msg: "Details added successfully"});
-                                        return;
-                                    }
-                                });
-                            },0);
-                        } else {
-                            res.send({status : false, msg: "Invali data." });
-                            return;
-                        }
+                        Country.findOne({_id : req.body.country_id, is_active : true},function(err,country) {
+                            if(err || !country) {
+                                res.send({status : false, msg: "Invalid country detail." });
+                                return;
+                            } else {
+                                var slug = Util.setSlug(req.body.name);
+                                if(typeof slug != 'undefined' && slug !== null && slug !== "") {
+                                    Util.checkSlugExistence(State, slug, '', 'state', function(slug) {
+                                        var state = new State({
+                                            name : req.body.name,
+                                            slug : slug,
+                                            country_id : req.body.country_id,
+                                            created_by : req.session.userData.user_id,
+                                            updated_by : req.session.userData.user_id
+                                        });
+                                        state.save(function(err,response){
+                                            if(err || !response) {
+                                                res.send({status : false, msg: "Cannot save your details . Please try again later" });
+                                                return;
+                                            } else {
+                                                res.send({status : true, msg: "Details added successfully"});
+                                                return;
+                                            }
+                                        });
+                                    },0);
+                                } else {
+                                    res.send({status : false, msg: "Invali data." });
+                                    return;
+                                }
+                            }
+                        });
                     } else {
                         res.send({status : false, msg: "State is already present." });
                         return;
@@ -122,29 +129,36 @@ var StateController = {
                         res.send({status : false, msg : "Invalid state"});
                         res.end();
                     } else {
-                        //need to save data
-                        Util.checkNameExistence(State, req.body.name, req.body.id, 'state', res, function(name) {
-                            var slug = Util.setSlug(req.body.name);
-                            if(typeof slug != 'undefined' && slug !== null && slug !== "") {
-                                Util.checkSlugExistence(State, slug, req.body.id, 'state', function(slug) {
-                                    state.name = name;
-                                    state.slug = slug;
-                                    state.country_id = req.body.country_id;
-                                    state.updated_at = Date.now();
-                                    state.updated_by = req.session.userData.user_id;
-                                    state.save(function(err, response) {
-                                        if(err || !response) {
-                                            res.send({status : false, msg: "Cannot save your details . Please try again later" });
-                                            return;
-                                        } else {
-                                            res.send({status : true, msg: "Details added successfully"});
-                                            return;
-                                        }
-                                    });
-                                },0);
-                            } else {
-                                res.send({status : false, msg: "Invali data."});
+                        Country.findOne({_id : req.body.country_id, is_active : true},function(err,country) {
+                            if(err || !country) {
+                                res.send({status : false, msg: "Invalid country detail." });
                                 return;
+                            } else {
+                                //need to save data
+                                Util.checkNameExistence(State, req.body.name, req.body.id, 'state', res, function(name) {
+                                    var slug = Util.setSlug(req.body.name);
+                                    if(typeof slug != 'undefined' && slug !== null && slug !== "") {
+                                        Util.checkSlugExistence(State, slug, req.body.id, 'state', function(slug) {
+                                            state.name = name;
+                                            state.slug = slug;
+                                            state.country_id = req.body.country_id;
+                                            state.updated_at = Date.now();
+                                            state.updated_by = req.session.userData.user_id;
+                                            state.save(function(err, response) {
+                                                if(err || !response) {
+                                                    res.send({status : false, msg: "Cannot save your details . Please try again later" });
+                                                    return;
+                                                } else {
+                                                    res.send({status : true, msg: "Details added successfully"});
+                                                    return;
+                                                }
+                                            });
+                                        },0);
+                                    } else {
+                                        res.send({status : false, msg: "Invali data."});
+                                        return;
+                                    }
+                                });
                             }
                         });
                     }

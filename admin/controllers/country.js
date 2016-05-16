@@ -27,15 +27,20 @@ var CountryController = {
     },
 
     getCountryDetailsById : function(req, res, next) {
-        Country.findOne({_id : req.body.country_id}).select("name").exec(function(err, country){
-            if(err || !country) {
-                res.send({status : false, msg : "Something went wrong"});
-                return;
-            } else {
-                res.send({status : true, country : country});
-                return;
-            }
-        });
+        if(typeof req.body.country_id !== "undefined" && req.body.country_id !== null) {
+            Country.findOne({_id : req.body.country_id}).select("name").exec(function(err, country){
+                if(err || !country) {
+                    res.send({status : false, msg : "Something went wrong"});
+                    return;
+                } else {
+                    res.send({status : true, country : country});
+                    return;
+                }
+            });
+        } else {
+            res.send({status : false, msg : "Invalid data"});
+            return;
+        }
     },
 
     addCountryDetails : function(req, res, next) {

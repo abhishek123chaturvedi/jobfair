@@ -57,6 +57,8 @@
                                                 <tr>
                                                     <th>S.No.</th>
                                                     <th>Name</th>
+                                                    <th>State Name</th>
+                                                    <th>Country Name</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -66,6 +68,8 @@
                                                 <tr>
                                                     <td><%=(i+1)%></td>
                                                     <td><%=city[i].name%></td>
+                                                    <td><%=city[i].state_id.name%></td>
+                                                    <td><%=city[i].country_id.name%></td>
                                                     <td>
                                                         <a href="javascript:;" data-id = "<%=city[i]._id%>" class="edit-city">Edit</a>
                                                         <% if(user_role == "admin") {%>
@@ -167,7 +171,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3">Country *</label>
                                     <div class="col-md-9 ">
-                                        <select name = "countryDropdown" class="country-dropdown-for-state form-control">
+                                        <select name = "countryDropdown" class="country-dropdown-for-city form-control">
 
                                         </select>
                                     </div>
@@ -220,7 +224,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3">Country *</label>
                                     <div class="col-md-9 ">
-                                        <select name = "countryDropdown" class="country-dropdown-for-state form-control">
+                                        <select name = "countryDropdown" class="country-dropdown-for-edit-city form-control">
 
                                         </select>
                                     </div>
@@ -229,7 +233,7 @@
                                 <div class="form-group row stateDropdown">
                                     <label class="col-md-3">State *</label>
                                     <div class="col-md-9 ">
-                                        <select name = "stateDropdown" class="state-dropdown-for-city form-control">
+                                        <select name = "stateDropdown" class="state-dropdown-for-edit-city form-control">
 
                                         </select>
                                     </div>

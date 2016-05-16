@@ -1,5 +1,5 @@
 /**
- * Created by devesh on 4/8/15.
+ * Created by Abhishek on 4/8/15.
  */
 var mongoose = require('mongoose'),
     config = require('./config');

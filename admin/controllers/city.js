@@ -4,6 +4,7 @@
 var Admin = require('../models/admin'),
     City = require('../models/city'),
     State = require('../models/state'),
+    Country = require('../models/country'),
     config = require('../config/config'),
     request = require('request'),
     async = require('async'),
@@ -15,7 +16,8 @@ var Admin = require('../models/admin'),
 var CityController = {
 
     getCityListing : function(req, res, next) {
-        City.find({},function(err, cityNames){
+        City.find({}).populate("country_id","name").populate("state_id","name").exec(function(err, cityNames){
+            console.log(cityNames)
             if(err) {
                 res.render('city/city_listing.html',{city : []});
                 console.log('error',err);
@@ -29,8 +31,7 @@ var CityController = {
     },
 
     getStateListing : function(req, res, next) {
-        State.find({country_id : req.query.country_id},function(err,response) {
-            console.log(err,response)
+        State.find({country_id : req.query.country_id, is_active : true},function(err,response) {
             if(err) {
                 res.send({ status : false, msg : "Something went wrong"});
                 return;
@@ -45,18 +46,25 @@ var CityController = {
     },
 
     getCityDetailsById : function(req, res, next) {
-        City.findOne({_id : req.body.city_id}).select("name state_id").exec(function(err, city){
+        City.findOne({_id : req.body.city_id}).select("name state_id country_id").exec(function(err, city){
             if(err || !city) {
                 res.send({status : false, msg : "Something went wrong"});
                 return;
             } else {
-                State.findOne({_id : city.state_id}).select("country_id").exec(function(err,data) {
-                    if(err || !data) {
+                State.find({country_id : city.country_id, is_active : true}).select("name").exec(function(err,state) {
+                    if(err || !state) {
                         res.send({status : false, msg : "Something went wrong"});
                         return;
                     } else {
-                        res.send({status : true, city : city, country : data});
-                        return;
+                        Country.find({is_active : true}).select("name").exec(function(err,country) {
+                            if(err || !country) {
+                                res.send({status : false, msg : "Something went wrong"});
+                                return;
+                            } else {
+                                res.send({status : true, city : city, country : country, state : state});
+                                return;
+                            }
+                        });
                     }
                 });
             }
@@ -65,7 +73,8 @@ var CityController = {
 
     addCityDetails : function(req, res, next) {
         if(typeof req.body.name !== "undefined" && typeof req.body.state_id !== "undefined" &&
-            req.body.name !== null && req.body.name !== "" && req.body.state_id !== null && req.body.state_id !=="") {
+            req.body.name !== null && req.body.name !== "" && req.body.state_id !== null && req.body.state_id !=="" &&
+            req.body.country_id !== "undefined" && req.body.country_id !== null) {
             var nameRegex = new RegExp(/^[a-zA-Z ]*$/);
             if(nameRegex.test(req.body.name)) {
                 City.findOne({name : req.body.name},function(err,city) {
@@ -73,31 +82,46 @@ var CityController = {
                         res.send({status : false, msg: "Something went wrong." });
                         return;
                     } else if(!city) {
-                        var slug = Util.setSlug(req.body.name);
-                        if(typeof slug != 'undefined' && slug !== null && slug !== "") {
-                            Util.checkSlugExistence(City, slug, '', 'city', function(slug) {
-                                var city = new City({
-                                    name : req.body.name,
-                                    slug : slug,
-                                    state_id : req.body.state_id,
-                                    created_by : req.session.userData.user_id,
-                                    updated_by : req.session.userData.user_id
-                                });
-                                city.save(function(err,response){
-                                    if(err || !response) {
-                                        res.send({status : false, msg: "Cannot save your details . Please try again later" });
+                        Country.findOne({_id : req.body.country_id, is_active : true},function(err,country) {
+                            if(err || !country) {
+                                res.send({status : false, msg: "Invalid country detail." });
+                                return;
+                            } else {
+                                State.findOne({_id : req.body.state_id, is_active : true},function(err,state) {
+                                    if(err || !state) {
+                                        res.send({status : false, msg: "Invalid state detail." });
                                         return;
                                     } else {
-                                        res.send({status : true, msg: "Details added successfully"});
-                                        return;
+                                        var slug = Util.setSlug(req.body.name);
+                                        if(typeof slug != 'undefined' && slug !== null && slug !== "") {
+                                            Util.checkSlugExistence(City, slug, '', 'city', function(slug) {
+                                                var city = new City({
+                                                    name : req.body.name,
+                                                    slug : slug,
+                                                    country_id : req.body.country_id,
+                                                    state_id : req.body.state_id,
+                                                    created_by : req.session.userData.user_id,
+                                                    updated_by : req.session.userData.user_id
+                                                });
+                                                city.save(function(err,response){
+                                                    if(err || !response) {
+                                                        res.send({status : false, msg: "Cannot save your details . Please try again later" });
+                                                        return;
+                                                    } else {
+                                                        res.send({status : true, msg: "Details added successfully"});
+                                                        return;
+                                                    }
+                                                });
+                                            },0);
+                                        } else {
+                                            res.send({status : false, msg: "Invali data." });
+                                            res.end();
+                                            return;
+                                        }
                                     }
                                 });
-                            },0);
-                        } else {
-                            res.send({status : false, msg: "Invali data." });
-                            res.end();
-                            return;
-                        }
+                            }
+                        });
                     } else {
                         res.send({status : false, msg: "City is already present." });
                         return;
@@ -116,7 +140,8 @@ var CityController = {
 
     updateCityDetailsById : function(req, res, next) {
         if(typeof req.body.name !== "undefined" && typeof req.body.state_id !== "undefined" &&
-            req.body.name !== null && req.body.name !== "" && req.body.state_id !== null && req.body.state_id !=="") {
+            req.body.name !== null && req.body.name !== "" && req.body.state_id !== null && req.body.state_id !==""
+            && typeof req.body.country_id !== "undefined" && req.body.country_id !== null && typeof req.body.id !== "undefined" ) {
             var nameRegex = new RegExp(/^[a-zA-Z ]*$/);
             if(nameRegex.test(req.body.name)) {
                 City.findOne({ _id : req.body.id}, function(error, city) {
@@ -124,27 +149,37 @@ var CityController = {
                         res.send({status : false, msg : "Invalid city"});
                         res.end();
                     } else {
-                        if(typeof req.body.name != 'undefined'){
-                            //need to save data
-                            Util.checkNameExistence(City, req.body.name, req.body.id, 'city', res, function(name) {
-                                city.name = req.body.name;
-                                city.updated_at = Date.now();
-                                city.updated_by = req.session.userData.user_id;
-                                city.save(function(err, response) {
-                                    if(err || !response) {
-                                        res.send({status : false, msg: "Cannot save your details . Please try again later" });
+                        Country.findOne({_id : req.body.country_id, is_active : true},function(err,country) {
+                            if(err || !country) {
+                                res.send({status : false, msg: "Invalid country detail." });
+                                return;
+                            } else {
+                                State.findOne({_id : req.body.state_id, is_active : true},function(err,state) {
+                                    if(err || !state) {
+                                        res.send({status : false, msg: "Invalid state detail." });
                                         return;
                                     } else {
-                                        res.send({status : true, msg: "Details added successfully"});
-                                        return;
+                                        //need to save data
+                                        Util.checkNameExistence(City, req.body.name, req.body.id, 'city', res, function(name) {
+                                            city.name = req.body.name;
+                                            city.country_id = req.body.country_id;
+                                            city.state_id = req.body.state_id;
+                                            city.updated_at = Date.now();
+                                            city.updated_by = req.session.userData.user_id;
+                                            city.save(function(err, response) {
+                                                if(err || !response) {
+                                                    res.send({status : false, msg: "Cannot save your details . Please try again later" });
+                                                    return;
+                                                } else {
+                                                    res.send({status : true, msg: "Details added successfully"});
+                                                    return;
+                                                }
+                                            });
+                                        });
                                     }
                                 });
-                            });
-                        } else {
-                            res.send({status : false, message : "Please enter name.",data:[]});
-                            res.end();
-                        }
-
+                            }
+                        });
                     }
                 });
             } else {
