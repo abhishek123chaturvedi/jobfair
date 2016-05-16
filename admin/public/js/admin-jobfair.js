@@ -454,5 +454,151 @@ AdminJobfair.prototype = {
             });
         });
 
+        /**
+        * CRUD of area start here
+        */
+
+        $('.add-area').click(function(e){
+            e.preventDefault();
+            $(".city-dropdown-for-area").find('option').remove();
+            $("#addAreaModal").modal({
+                show: true
+            });
+            $.ajax({
+                url: '/get-city-listing-for-area',
+                type: 'get',
+                success: function (res) {
+                    if(typeof res.status !== "undefined" && res.status == true) {
+                        var html = '';
+                            html += '<option value="">Select City</option>';
+                        for(var i = 0; i<res.data.length; i++) {
+                            html  += '<option value="'+res.data[i]._id+'">'+res.data[i].name+'</option>';
+                        }
+
+                        $(".city-dropdown-for-area").append(html);
+                    } else {
+                        alert(res.msg)
+                    }
+                }
+            });
+        });
+
+        $('#addArea').submit(function(e){
+            e.preventDefault();
+            var data = {
+                name : $(".area_name").val(),
+                country_id : $('.city-dropdown-for-area').find("option:selected").val()
+            };
+
+            $.ajax({
+                url: '/add-area-details',
+                data : data,
+                type: 'post',
+                success: function (res) {
+                    if(typeof res.status !== "undefined" && res.status == true) {
+                        $('#addAreaModal').modal('hide');
+                        location.reload();
+                    } else {
+                        alert(res.msg)
+                    }
+                }
+            });
+        });
+
+        $('.edit-area').click(function(e) {
+            e.preventDefault();
+            $(".city-dropdown-for-edit-area").find('option').remove();
+            var data = {
+                area_id : $(this).attr('data-id')
+            };
+            $.ajax({
+                url: '/get-area-details-by-id',
+                data : data,
+                type: 'post',
+                success: function (res) {
+                    if(typeof res.status !== "undefined" && res.status == true) {
+                        $('.edit_area_id').val(res.state._id);
+                        $('.edit_area_name').val(res.state.name);
+                        var html = "";
+                        if(typeof res.city !== "undefined" && res.city !== null) {
+                            html += '<option value="">Select City</option>';
+                            for(var i = 0; i<res.city.length; i++) {
+                                if(res.area.city_id._id == res.city[i]._id ) {
+                                    html  += '<option selected="selected" value="'+res.city[i]._id+'">'+res.city[i].name+'</option>';
+                                } else {
+                                    html  += '<option value="'+res.city[i]._id+'">'+res.city[i].name+'</option>';
+                                }
+
+                            }
+                        }
+                        $(".city-dropdown-for-edit-area").append(html);
+                        $("#editStateModal").modal({
+                            show: true
+                        });
+                    } else {
+                        alert(res.msg)
+                    }
+                }
+            });
+        });
+
+        $("#editArea").submit(function(e) {
+            e.preventDefault();
+            var data = {
+                id : $(".edit_area_id").val(),
+                name : $(".edit_area_name").val(),
+                country_id : $('.city-dropdown-for-edit-area').find("option:selected").val()
+            };
+            $.ajax({
+                url: '/update-area-details-by-id',
+                data : data,
+                type: 'post',
+                success: function (res) {
+                    if(typeof res.status !== "undefined" && res.status == true) {
+                        $('#editArea').modal('hide');
+                        location.reload();
+                    } else {
+                        alert(res.msg);
+                    }
+                }
+            });
+        });
+
+        $('.update-status-area').click(function(e){
+            var data = {
+                id : $(this).attr('data-id')
+            };
+            $.ajax({
+                url: '/update-area-status-by-id',
+                data : data,
+                type: 'post',
+                success: function (res) {
+                    if(typeof res.status !== "undefined" && res.status == true) {
+                        location.reload();
+                    } else {
+                        alert(res.msg);
+                    }
+                }
+            });
+        });
+
+        $('.delete-area').click(function(e){
+            var data = {
+                id : $(this).attr('data-id')
+            };
+            $.ajax({
+                url: '/delete-area-by-id',
+                data : data,
+                type: 'post',
+                success: function (res) {
+                    if(typeof res.status !== "undefined" && res.status == true) {
+                        location.reload();
+                    } else {
+                        alert(res.msg);
+                    }
+                }
+            });
+        });
+
     }
 };

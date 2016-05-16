@@ -12,44 +12,44 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        State Listing <small>Statistics Overview</small>
+                        Area Listing <small>Statistics Overview</small>
                     </h1>
                     <ol class="breadcrumb">
                         <li class="active">
-                            <i class="fa fa-dashboard"></i> State Listing
-                            <a class="text-right add-state" href="javascript:;">Add State</a>
+                            <i class="fa fa-dashboard"></i> Area Listing
+                            <a class="text-right add-area" href="javascript:;">Add Area</a>
                         </li>
                     </ol>
                 </div>
             </div>
             <!-- /.row -->
-            <% if (state.length > 0) {%>
+            <% if (area.length > 0) {%>
             <div class="row">
                 <div class="col-md-12">
                     <table class="table">
                         <thead>
                         <tr>
                             <th>S.No</th>
-                            <th>State Name</th>
-                            <th>Country Name</th>
+                            <th>Area Name</th>
+                            <th>City Name</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <% for (var i = 0; i< state.length ; i++) {%>
+                        <% for (var i = 0; i< area.length ; i++) {%>
                         <tr>
                             <td><%=(i+1)%></td>
-                            <td><%=state[i].name%></td>
-                            <td><%=state[i].country_id.name%></td>
+                            <td><%=area[i].name%></td>
+                            <td><%=area[i].city_id.name%></td>
                             <td>
-                                <a href="javascript:;" class="edit-state" data-id = "<%=state[i]._id%>">Edit</a>
+                                <a href="javascript:;" class="edit-area" data-id = "<%=area[i]._id%>">Edit</a>
                                 <% if(user_role == "admin") {%>
-                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="delete-state">Delete</a>
+                                <a href="javascript:;" data-id = "<%=area[i]._id%>" class="delete-area">Delete</a>
                                 <% } %>
                                 <% if(state[i].is_active) { %>
-                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="update-status-state">Disable</a>
+                                <a href="javascript:;" data-id = "<%=area[i]._id%>" class="update-status-area">Disable</a>
                                 <%} else {%>
-                                <a href="javascript:;" data-id = "<%=state[i]._id%>" class="update-status-state">Enable</a>
+                                <a href="javascript:;" data-id = "<%=area[i]._id%>" class="update-status-area">Enable</a>
                                 <% } %>
                             </td>
                         </tr>
@@ -61,9 +61,8 @@
             </div>
             <!-- /.row -->
             <% }else { %>
-            <p>No state present</p>
+            <p>No area present</p>
             <% } %>
-
         </div>
         <!-- /.container-fluid -->
     </div>
@@ -73,27 +72,27 @@
 
 <!-- Modal for add state-->
 
-<div class="modal fade" id="addStateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="addAreaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add State</h4>
+                <h4 class="modal-title">Add Area</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <form id="addState">
+                        <form id="addArea">
                             <div class="form-group row">
                                 <label class="col-md-3">Name *</label>
                                 <div class="col-md-9 ">
-                                    <input type="text" class="form-control state_name" autofocus name="name" id="name">
+                                    <input type="text" class="form-control area_name" autofocus name="name" id="name">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-md-3">Country *</label>
+                                <label class="col-md-3">City *</label>
                                 <div class="col-md-9 ">
-                                    <select name = "countryDropdown" class="country-dropdown-for-state form-control">
+                                    <select name = "cityDropdown" class="city-dropdown-for-area form-control">
 
                                     </select>
                                 </div>
@@ -116,28 +115,28 @@
 
 <!--edit state modal-->
 
-<div class="modal fade" id="editStateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="editAreaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Edit State</h4>
+                <h4 class="modal-title">Edit Area</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <form id="editState">
-                            <input type="hidden" class="form-control edit_state_id" autofocus name="state_id" id="state_id">
+                        <form id="editArea">
+                            <input type="hidden" class="form-control edit_state_id" autofocus name="area_id" id="area_id">
                             <div class="form-group row">
                                 <label class="col-md-3">Name *</label>
                                 <div class="col-md-9 ">
-                                    <input type="text" class="form-control edit_state_name" autofocus name="name" id="name">
+                                    <input type="text" class="form-control edit_area_name" autofocus name="name" id="name">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-3">Country *</label>
                                 <div class="col-md-9 ">
-                                    <select name = "countryDropdown" class="country-dropdown-for-edit-state form-control">
+                                    <select name = "cityDropdown" class="city-dropdown-for-edit-area form-control">
 
                                     </select>
                                 </div>

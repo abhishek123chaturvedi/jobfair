@@ -3,8 +3,8 @@
  * Created by Abhishek on 22/10/15.
  */
 var Admin = require('../models/admin'),
-    Country = require('../models/country'),
-    State = require('../models/state'),
+    area = require('../models/area'),
+    city = require('../models/city'),
     config = require('../config/config'),
     request = require('request'),
     async = require('async'),
@@ -13,35 +13,35 @@ var Admin = require('../models/admin'),
 
 
 
-var StateController = {
+var AreaController = {
 
-    getStateListing : function(req, res, next) {
-        State.find({}).populate("country_id","name").exec(function(err,response) {
+    getAreaListing : function(req, res, next) {
+        area.find({}).populate("city_id","name").exec(function(err,response) {
             if(err) {
-                res.render('state/state_listing.html',{state : []});
+                res.render('area/area_listing.html',{area : []});
             } else if(!response) {
-                res.render('state/state_listing.html',{state : [],user_role: req.userRole});
+                res.render('area/area_listing.html',{area : [],user_role: req.userRole});
             } else {
 
-                res.render('state/state_listing.html',{state : response, user_role: req.userRole})
+                res.render('area/area_listing.html',{area : response, user_role: req.userRole})
             }
         });
     },
 
-    getStateDetailsById : function(req, res, next) {
-        if(typeof req.body.state_id !== "undefined" && req.body.state_id !== null && req.body.state_id !== "") {
-            State.findOne({_id : req.body.state_id}).select("name country_id").populate("country_id","name").exec(function(err, state){
-                if(err || !state) {
+    getAreaDetailsById : function(req, res, next) {
+        if(typeof req.body.area_id !== "undefined" && req.body.area_id !== null && req.body.area_id !== "") {
+            area.findOne({_id : req.body.area_id}).select("name city_id").populate("city_id","name").exec(function(err, area){
+                if(err || !area) {
                     res.send({status : false, msg : "Something went wrong"});
                     return;
                 } else {
-                    Country.find({is_active : true}).select("name").exec(function(err,country) {
+                    city.find({is_active : true}).select("name").exec(function(err,city) {
                         //console.log(JSON.stringify(country));
-                        if(err && !country) {
+                        if(err && !city) {
                             res.send({status : false, msg : "Something went wrong"});
                             return;
                         } else {
-                            res.send({status : true, state : state, country : country});
+                            res.send({status : true, area : area, city : city});
                             return;
                         }
                     });
@@ -53,45 +53,45 @@ var StateController = {
         }
     },
 
-    getCountryListing : function( req, res, next) {
-        Country.find({is_active : true}).select("name").exec(function(err,country) {
+    getCityListing : function( req, res, next) {
+        city.find({is_active : true}).select("name").exec(function(err,city) {
             //console.log(JSON.stringify(country));
-            if(err && !country) {
+            if(err && !city) {
                 res.send({status : false, msg : "Something went wrong"});
                 return;
             } else {
-                res.send({status : true, data : country});
+                res.send({status : true, data : city});
                 return;
             }
         });
     },
 
-    addStateDetails : function(req, res, next) {
-        if(typeof req.body.name !== "undefined" && typeof req.body.country_id !== "undefined" &&
-            req.body.name !== null && req.body.name !== "" && req.body.country_id !== null && req.body.country_id !=="") {
+    addAreaDetails : function(req, res, next) {
+        if(typeof req.body.name !== "undefined" && typeof req.body.city_id !== "undefined" &&
+            req.body.name !== null && req.body.name !== "" && req.body.city_id !== null && req.body.city_id !=="") {
             var nameRegex = new RegExp(/^[a-zA-Z ]*$/);
             if(nameRegex.test(req.body.name)) {
-                State.findOne({name : req.body.name},function(err,state) {
+                area.findOne({name : req.body.name},function(err,area) {
                     if(err) {
                         res.send({status : false, msg: "Something went wrong" });
                         return;
-                    } else if(!state) {
-                        Country.findOne({_id : req.body.country_id, is_active : true},function(err,country) {
-                            if(err || !country) {
-                                res.send({status : false, msg: "Invalid country detail" });
+                    } else if(!area) {
+                        city.findOne({_id : req.body.city_id, is_active : true},function(err,city) {
+                            if(err || !city) {
+                                res.send({status : false, msg: "Invalid city detail" });
                                 return;
                             } else {
                                 var slug = Util.setSlug(req.body.name);
                                 if(typeof slug != 'undefined' && slug !== null && slug !== "") {
-                                    Util.checkSlugExistence(State, slug, '', 'state', function(slug) {
-                                        var state = new State({
+                                    Util.checkSlugExistence(area, slug, '', 'area', function(slug) {
+                                        var area = new area({
                                             name : req.body.name,
                                             slug : slug,
-                                            country_id : req.body.country_id,
+                                            city_id : req.body.city_id,
                                             created_by : req.session.userData.user_id,
                                             updated_by : req.session.userData.user_id
                                         });
-                                        state.save(function(err,response){
+                                        area.save(function(err,response){
                                             if(err || !response) {
                                                 res.send({status : false, msg: "Cannot save your details . Please try again later" });
                                                 return;
@@ -108,7 +108,7 @@ var StateController = {
                             }
                         });
                     } else {
-                        res.send({status : false, msg: "State is already present" });
+                        res.send({status : false, msg: "Area is already present" });
                         return;
                     }
                 });
@@ -122,32 +122,32 @@ var StateController = {
         }
     },
 
-    updateStateDetailsById : function(req, res, next) {
+    updateAreaDetailsById : function(req, res, next) {
         if(typeof req.body.name !== "undefined" && req.body.name != null && req.body.name !== "" && typeof req.body.id !== "undefined" &&
-        typeof req.body.country_id !== "undefined" && req.body.country_id !== null) {
+        typeof req.body.city_id !== "undefined" && req.body.city_id !== null) {
             var nameRegex = new RegExp(/^[a-zA-Z ]*$/);
             if(nameRegex.test(req.body.name)) {
-                State.findOne({ _id : req.body.id}, function(error, state) {
-                    if (error || !state) {
-                        res.send({status : false, msg : "Invalid state"});
+                area.findOne({ _id : req.body.id}, function(error, area) {
+                    if (error || !area) {
+                        res.send({status : false, msg : "Invalid area"});
                         res.end();
                     } else {
-                        Country.findOne({_id : req.body.country_id, is_active : true},function(err,country) {
-                            if(err || !country) {
-                                res.send({status : false, msg: "Invalid country detail" });
+                        city.findOne({_id : req.body.city_id, is_active : true},function(err,city) {
+                            if(err || !city) {
+                                res.send({status : false, msg: "Invalid city detail" });
                                 return;
                             } else {
                                 //need to save data
-                                Util.checkNameExistence(State, req.body.name, req.body.id, 'state', res, function(name) {
+                                Util.checkNameExistence(area, req.body.name, req.body.id, 'area', res, function(name) {
                                     var slug = Util.setSlug(req.body.name);
                                     if(typeof slug != 'undefined' && slug !== null && slug !== "") {
-                                        Util.checkSlugExistence(State, slug, req.body.id, 'state', function(slug) {
-                                            state.name = name;
-                                            state.slug = slug;
-                                            state.country_id = req.body.country_id;
-                                            state.updated_at = Date.now();
-                                            state.updated_by = req.session.userData.user_id;
-                                            state.save(function(err, response) {
+                                        Util.checkSlugExistence(area, slug, req.body.id, 'area', function(slug) {
+                                            area.name = name;
+                                            area.slug = slug;
+                                            area.city_id = req.body.city_id;
+                                            area.updated_at = Date.now();
+                                            area.updated_by = req.session.userData.user_id;
+                                            area.save(function(err, response) {
                                                 if(err || !response) {
                                                     res.send({status : false, msg: "Cannot save your details . Please try again later" });
                                                     return;
@@ -176,11 +176,11 @@ var StateController = {
         }
     },
 
-    updateStateStatusById : function(req, res, next) {
+    updateAreaStatusById : function(req, res, next) {
         if(typeof req.body.id !== "undefined" && req.body.id != null && req.body.id !== "") {
-            State.findOne({_id : req.body.id},function(err,response) {
+            area.findOne({_id : req.body.id},function(err,response) {
                 if(err|| !response) {
-                    res.send({status : false, msg : "Invalid state"});
+                    res.send({status : false, msg : "Invalid area"});
                     res.end();
                 } else {
                     response.is_active = !response.is_active;
@@ -203,19 +203,19 @@ var StateController = {
         }
     },
 
-    deleteStateById : function(req, res, next) {
+    deleteAreaById : function(req, res, next) {
         if(typeof req.body.id !== "undefined" && req.body.id != null && req.body.id !== "") {
-            State.findOne({_id : req.body.id},function(err,response) {
+            area.findOne({_id : req.body.id},function(err,response) {
                 if(err && !response) {
-                    res.send({status : false, msg : "Invalid state"});
+                    res.send({status : false, msg : "Invalid area"});
                     res.end();
                 } else {
-                    State.remove({_id : req.body.id},function(err,response) {
+                    area.remove({_id : req.body.id},function(err,response) {
                         if(err || !response) {
-                            res.send({status : false, msg : "Invalid state"});
+                            res.send({status : false, msg : "Invalid area"});
                             res.end();
                         } else {
-                            res.send({status : true, msg: "State deleted successfully"});
+                            res.send({status : true, msg: "Area deleted successfully"});
                             return;
                         }
                     });
@@ -227,4 +227,4 @@ var StateController = {
         }
     }
 };
-module.exports = StateController;
+module.exports = AreaController;

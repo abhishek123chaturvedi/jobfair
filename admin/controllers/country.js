@@ -44,7 +44,6 @@ var CountryController = {
     },
 
     addCountryDetails : function(req, res, next) {
-
         if(typeof req.body.name !== "undefined" && req.body.name != null && req.body.name !== "") {
             var nameRegex = new RegExp(/^[a-zA-Z ]*$/);
             if(nameRegex.test(req.body.name)) {
@@ -167,7 +166,7 @@ var CountryController = {
         if(typeof req.body.country_id !== "undefined" && req.body.country_id != null && req.body.country_id !== "") {
             Country.findOne({_id : req.body.id},function(err,response) {
                 if(err && !response) {
-                    res.send({status : false, msg: "Invalid country."});
+                    res.send({status : false, msg: "Invalid country"});
                     return;
                 } else {
                     Country.remove({_id : req.body.id},function(err,response) {
@@ -182,7 +181,7 @@ var CountryController = {
                 }
             });
         } else {
-            res.send({status : false, msg: "Invalid data."});
+            res.send({status : false, msg: "Invalid data"});
             return;
         }
     }
