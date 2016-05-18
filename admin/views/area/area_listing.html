@@ -46,7 +46,7 @@
                                 <% if(user_role == "admin") {%>
                                 <a href="javascript:;" data-id = "<%=area[i]._id%>" class="delete-area">Delete</a>
                                 <% } %>
-                                <% if(state[i].is_active) { %>
+                                <% if(area[i].is_active) { %>
                                 <a href="javascript:;" data-id = "<%=area[i]._id%>" class="update-status-area">Disable</a>
                                 <%} else {%>
                                 <a href="javascript:;" data-id = "<%=area[i]._id%>" class="update-status-area">Enable</a>
@@ -86,13 +86,13 @@
                             <div class="form-group row">
                                 <label class="col-md-3">Name *</label>
                                 <div class="col-md-9 ">
-                                    <input type="text" class="form-control area_name" autofocus name="name" id="name">
+                                    <input type="text" class="form-control area_name" autofocus name="name" id="name" required>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-3">City *</label>
                                 <div class="col-md-9 ">
-                                    <select name = "cityDropdown" class="city-dropdown-for-area form-control">
+                                    <select name = "cityDropdown" class="city-dropdown-for-area form-control" required>
 
                                     </select>
                                 </div>
@@ -130,13 +130,13 @@
                             <div class="form-group row">
                                 <label class="col-md-3">Name *</label>
                                 <div class="col-md-9 ">
-                                    <input type="text" class="form-control edit_area_name" autofocus name="name" id="name">
+                                    <input type="text" class="form-control edit_area_name" autofocus name="name" id="name" required>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-3">Country *</label>
                                 <div class="col-md-9 ">
-                                    <select name = "cityDropdown" class="city-dropdown-for-edit-area form-control">
+                                    <select name = "cityDropdown" class="city-dropdown-for-edit-area form-control" required>
 
                                     </select>
                                 </div>

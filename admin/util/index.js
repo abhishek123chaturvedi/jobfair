@@ -20,11 +20,6 @@ var util = {
         var nameValue = name;
 
         switch(type) {
-            case 'area' :
-                query.push({"areas.slug" : nameValue});
-                (id != null && id != '') ? query.push({'areas._id': { $ne: id }}) : '';
-                break;
-
             case 'todo' :
                 query.push({"listing.slug" : nameValue});
                 (id != null && id != '') ? query.push({'listing._id': { $ne: id }}) : '';

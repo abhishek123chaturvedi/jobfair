@@ -487,9 +487,8 @@ AdminJobfair.prototype = {
             e.preventDefault();
             var data = {
                 name : $(".area_name").val(),
-                country_id : $('.city-dropdown-for-area').find("option:selected").val()
+                city_id : $('.city-dropdown-for-area').find("option:selected").val()
             };
-
             $.ajax({
                 url: '/add-area-details',
                 data : data,

@@ -3,7 +3,7 @@
  * Created by Abhishek on 22/10/15.
  */
 var Admin = require('../models/admin'),
-    area = require('../models/area'),
+    Area = require('../models/area'),
     city = require('../models/city'),
     config = require('../config/config'),
     request = require('request'),
@@ -16,7 +16,8 @@ var Admin = require('../models/admin'),
 var AreaController = {
 
     getAreaListing : function(req, res, next) {
-        area.find({}).populate("city_id","name").exec(function(err,response) {
+        console.log(req.params);
+        Area.find({}).populate("city_id","name").exec(function(err,response) {
             if(err) {
                 res.render('area/area_listing.html',{area : []});
             } else if(!response) {
@@ -30,7 +31,7 @@ var AreaController = {
 
     getAreaDetailsById : function(req, res, next) {
         if(typeof req.body.area_id !== "undefined" && req.body.area_id !== null && req.body.area_id !== "") {
-            area.findOne({_id : req.body.area_id}).select("name city_id").populate("city_id","name").exec(function(err, area){
+            Area.findOne({_id : req.body.area_id}).select("name city_id").populate("city_id","name").exec(function(err, area){
                 if(err || !area) {
                     res.send({status : false, msg : "Something went wrong"});
                     return;
@@ -55,6 +56,7 @@ var AreaController = {
 
     getCityListing : function( req, res, next) {
         city.find({is_active : true}).select("name").exec(function(err,city) {
+            console.log(err,city);
             //console.log(JSON.stringify(country));
             if(err && !city) {
                 res.send({status : false, msg : "Something went wrong"});
@@ -71,7 +73,7 @@ var AreaController = {
             req.body.name !== null && req.body.name !== "" && req.body.city_id !== null && req.body.city_id !=="") {
             var nameRegex = new RegExp(/^[a-zA-Z ]*$/);
             if(nameRegex.test(req.body.name)) {
-                area.findOne({name : req.body.name},function(err,area) {
+                Area.findOne({name : req.body.name},function(err,area) {
                     if(err) {
                         res.send({status : false, msg: "Something went wrong" });
                         return;
@@ -83,8 +85,8 @@ var AreaController = {
                             } else {
                                 var slug = Util.setSlug(req.body.name);
                                 if(typeof slug != 'undefined' && slug !== null && slug !== "") {
-                                    Util.checkSlugExistence(area, slug, '', 'area', function(slug) {
-                                        var area = new area({
+                                    Util.checkSlugExistence(Area, slug, '', 'area', function(slug) {
+                                        var area = new Area({
                                             name : req.body.name,
                                             slug : slug,
                                             city_id : req.body.city_id,
@@ -127,7 +129,7 @@ var AreaController = {
         typeof req.body.city_id !== "undefined" && req.body.city_id !== null) {
             var nameRegex = new RegExp(/^[a-zA-Z ]*$/);
             if(nameRegex.test(req.body.name)) {
-                area.findOne({ _id : req.body.id}, function(error, area) {
+                Area.findOne({ _id : req.body.id}, function(error, area) {
                     if (error || !area) {
                         res.send({status : false, msg : "Invalid area"});
                         res.end();
@@ -141,7 +143,7 @@ var AreaController = {
                                 Util.checkNameExistence(area, req.body.name, req.body.id, 'area', res, function(name) {
                                     var slug = Util.setSlug(req.body.name);
                                     if(typeof slug != 'undefined' && slug !== null && slug !== "") {
-                                        Util.checkSlugExistence(area, slug, req.body.id, 'area', function(slug) {
+                                        Util.checkSlugExistence(Area, slug, req.body.id, 'area', function(slug) {
                                             area.name = name;
                                             area.slug = slug;
                                             area.city_id = req.body.city_id;

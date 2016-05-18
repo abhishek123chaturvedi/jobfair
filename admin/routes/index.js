@@ -38,13 +38,13 @@ router.post('/update-city-details-by-id', Admin.isLoggedIn,City.updateCityDetail
 router.post('/update-city-status-by-id', Admin.isLoggedIn,City.updateCityStatusById);
 router.post('/delete-city-by-id', Admin.isLoggedIn,Admin.isAdminAllowed, City.deleteCityById);
 
-// router.get('/area', Admin.isLoggedIn, Admin.getUserRole, Area.getAreaListing);
-// router.get('/get-city-listing-for-area', Admin.isLoggedIn, Area.geCityListing);
-// router.post('/add-area-details', Admin.isLoggedIn, Area.addAreaDetails);
-// router.post('/get-area-details-by-id', Admin.isLoggedIn,Area.getAreaDetailsById);
-// router.post('/update-area-details-by-id', Admin.isLoggedIn,Area.updateAreaDetailsById);
-// router.post('/update-area-status-by-id', Admin.isLoggedIn,Area.updateAreaStatusById);
-// router.post('/delete-area-by-id', Admin.isLoggedIn,Admin.isAdminAllowed, Area.deleteAreaById);
+router.get('/area', Admin.isLoggedIn, Admin.getUserRole, Area.getAreaListing);
+router.get('/get-city-listing-for-area', Admin.isLoggedIn, Area.getCityListing);
+router.post('/add-area-details', Admin.isLoggedIn, Area.addAreaDetails);
+router.post('/get-area-details-by-id', Admin.isLoggedIn,Area.getAreaDetailsById);
+router.post('/update-area-details-by-id', Admin.isLoggedIn,Area.updateAreaDetailsById);
+router.post('/update-area-status-by-id', Admin.isLoggedIn,Area.updateAreaStatusById);
+router.post('/delete-area-by-id', Admin.isLoggedIn,Admin.isAdminAllowed, Area.deleteAreaById);
 
 
 router.get('/logout', Admin.logout);
